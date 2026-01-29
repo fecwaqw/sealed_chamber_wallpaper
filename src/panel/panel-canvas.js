@@ -49,13 +49,13 @@ export function updateTexture() {
 }
 
 function audioListener(audioArray) {
-    var energys = Array.from({ length: 11 }, (_, k) => {
+    var energys = Array.from({ length: 15 }, (_, k) => {
         const leftEnergy = Math.min(
-            audioArray[Math.floor(((k + 1) / 11) * 64) - 1],
+            audioArray[Math.floor(((k + 1) / 15) * 64) - 1],
             1,
         );
         const rightEnery = Math.min(
-            audioArray[Math.floor(((k + 1) / 11) * 64) - 1 + 64],
+            audioArray[Math.floor(((k + 1) / 15) * 64) - 1 + 64],
             1,
         );
         const averageEnergy = (leftEnergy + rightEnery) / 2;
@@ -75,7 +75,7 @@ function audioListener(audioArray) {
             64) *
             116,
     );
-    for (var i = 0; i < 11; i++) {
+    for (var i = 0; i < 15; i++) {
         setSpectrumLevelBars(i, energys[i]);
     }
     setPeakprogramMeterLevelBar("L", magnitudeLeft);
