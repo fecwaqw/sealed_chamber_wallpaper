@@ -8,7 +8,7 @@ import {
     setProgressBar,
 } from "./elements";
 let WIDTH, HEIGHT;
-const wallpaper = false;
+const wallpaper = true;
 const debug = false;
 if (!debug) {
     var canvasEl = document.createElement("canvas");
@@ -49,7 +49,7 @@ export function updateTexture() {
 }
 
 function audioListener(audioArray) {
-    energys = Array.from({ length: 11 }, (_, k) => {
+    var energys = Array.from({ length: 11 }, (_, k) => {
         const leftEnergy = Math.min(
             audioArray[Math.floor(((k + 1) / 11) * 64) - 1],
             1,
@@ -61,18 +61,20 @@ function audioListener(audioArray) {
         const averageEnergy = (leftEnergy + rightEnery) / 2;
         return Math.round(averageEnergy * 22);
     });
-    magnitudeLeft =
+    var magnitudeLeft = Math.round(
         (audioArray.slice(0, 64).reduce((sum, value) => {
             return sum + value;
         }, 0) /
             64) *
-        116;
-    magnitudeRight =
+            116,
+    );
+    var magnitudeRight = Math.round(
         (audioArray.slice(64, 128).reduce((sum, value) => {
             return sum + value;
         }, 0) /
             64) *
-        116;
+            116,
+    );
     for (var i = 0; i < 11; i++) {
         setSpectrumLevelBars(i, energys[i]);
     }
@@ -94,8 +96,14 @@ function mediaPlaybackListener(event) {
 function mediaTimelineListener(event) {
     setProgressBar(Math.ceil((event.position / event.duration) * 3));
 }
+function mediaStatusListener(event) {
+    if (!event.enabled) {
+        setPlayStatus(true);
+    }
+}
 if (wallpaper) {
     window.wallpaperRegisterAudioListener(audioListener);
     window.wallpaperRegisterMediaPlaybackListener(mediaPlaybackListener);
     window.wallpaperRegisterMediaTimelineListener(mediaTimelineListener);
+    window.wallpaperRegisterMediaStatusListener(mediaStatusListener);
 }

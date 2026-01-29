@@ -1,6 +1,7 @@
 import { Box, Text, Ellipse, Group, Rect, Polygon } from "leafer-ui";
 import { Flow } from "@leafer-in/flow";
 import "@leafer-in/animate";
+import { disk, cycle, speaker, infinity } from "../images";
 const spectrumLevelBars = Array.from({ length: 15 }, () =>
     Array.from(
         { length: 22 },
@@ -239,7 +240,7 @@ const diskPanel = new Box({
             fill: [
                 {
                     type: "image",
-                    url: "/images/disk.png",
+                    url: disk,
                     mode: "stretch",
                 },
             ],
@@ -253,7 +254,7 @@ const diskPanel = new Box({
             height: 27,
             fill: {
                 type: "image",
-                url: "/images/disk.png",
+                url: disk,
                 mode: "stretch",
             },
             origin: "center",
@@ -314,7 +315,7 @@ const control = new Group({
             height: 45,
             fill: {
                 type: "image",
-                url: "/images/cycle.png",
+                url: cycle,
                 mode: "stretch",
             },
         }),
@@ -410,7 +411,7 @@ const peakprogramMeter = new Group({
             height: 30,
             fill: {
                 type: "image",
-                url: "/images/speaker.svg",
+                url: speaker,
                 mode: "stretch",
             },
             around: "center",
@@ -453,7 +454,7 @@ const peakprogramMeter = new Group({
                             height: 12,
                             fill: {
                                 type: "image",
-                                url: "/images/infinity.svg",
+                                url: infinity,
                                 mode: "stretch",
                             },
                             around: "left",

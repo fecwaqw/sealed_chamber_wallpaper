@@ -4,9 +4,7 @@ import { camera } from "./camera";
 import * as background from "./background";
 import * as THREE from "three";
 import {
-    BloomPass,
     EffectComposer,
-    FilmPass,
     FocusShader,
     OutputPass,
     RenderPass,
@@ -39,18 +37,10 @@ scene.add(panel.mesh, camera);
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-var focusShader = new ShaderPass(FocusShader);
-focusShader.uniforms["screenWidth"].value = window.innerWidth;
-focusShader.uniforms["screenHeight"].value = window.innerHeight;
-focusShader.uniforms["sampleDistance"].value = 0.3;
-composer.addPass(focusShader);
-composer.addPass(new BloomPass(0.8, 25, 0.5, 256));
-composer.addPass(new FilmPass(0.5, false));
 // Glow pass at right edge
 var glowPass = new ShaderPass(background.GlowShader);
 glowPass.uniforms["uAspect"].value = window.innerWidth / window.innerHeight;
 composer.addPass(glowPass);
-
 composer.addPass(new SMAAPass());
 composer.addPass(new OutputPass());
 

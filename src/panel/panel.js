@@ -54,7 +54,7 @@ const material = new THREE.ShaderMaterial({
     fragmentShader: fragmentShader,
     uniforms: {
         uAlphaStart: { value: 1 },
-        uAlphaEnd: { value: 0.2 },
+        uAlphaEnd: { value: 0.4 },
         uControlPoint1: { value: 0.2 },
         uControlPoint2: { value: 0.6 },
         uTexture: { value: texture },

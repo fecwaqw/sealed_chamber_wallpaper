@@ -1,7 +1,7 @@
 import * as THREE from "three";
-
+import { background } from "./images";
 const loader = new THREE.TextureLoader();
-export const texture = loader.load("/background.jpg");
+export const texture = loader.load(background);
 texture.colorSpace = THREE.SRGBColorSpace;
 
 // Glow shader for post-processing pass
