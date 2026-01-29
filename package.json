@@ -1,0 +1,24 @@
+{
+  "name": "sealed_chamber_wallpaper",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-glsl": "^1.5.5"
+  },
+  "dependencies": {
+    "@leafer-in/animate": "^2.0.0",
+    "@leafer-in/color": "^2.0.0",
+    "@leafer-in/flow": "^2.0.0",
+    "@leafer-in/resize": "^2.0.0",
+    "leafer-ui": "^2.0.0",
+    "three": "^0.182.0"
+  }
+}
