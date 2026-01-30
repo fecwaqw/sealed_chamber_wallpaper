@@ -10,18 +10,14 @@ import {
 let WIDTH, HEIGHT;
 const wallpaper = true;
 const debug = false;
-if (!debug) {
-    var canvasEl = document.createElement("canvas");
-} else {
-    var canvasEl = document.querySelector("#debug");
-}
+var canvasEl = document.createElement("canvas");
 const leafer = new Leafer({
     view: canvasEl,
     width: 1300,
     height: 800,
     hittable: false,
     hitChildren: false,
-    fill: "#000",
+    fill: "#00000010",
 });
 function drawUI() {
     leafer.add(elements);
@@ -106,4 +102,7 @@ if (wallpaper) {
     window.wallpaperRegisterMediaPlaybackListener(mediaPlaybackListener);
     window.wallpaperRegisterMediaTimelineListener(mediaTimelineListener);
     window.wallpaperRegisterMediaStatusListener(mediaStatusListener);
+}
+if (debug) {
+    setSpectrumLevelBars(2, 10);
 }

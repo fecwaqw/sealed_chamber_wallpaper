@@ -15,38 +15,33 @@ const fragmentShader = `
     uniform sampler2D uTexture;
     uniform float uAlphaStart;
     uniform float uAlphaEnd;
-    uniform float uControlPoint1;
-    uniform float uControlPoint2;
+    uniform float uGlowIntensity;
+    uniform vec3 uGlowColor;
+    uniform vec3 uTargetColor;
 
     varying vec2 vUv;
     varying vec3 vPosition;
 
-    float cubicBezier(float t, float p0, float p1, float p2, float p3) {
-    float u = 1.0 - t;
-    float tt = t * t;
-    float uu = u * u;
-    float uuu = uu * u;
-    float ttt = tt * t;
-
-    float p = uuu * p0;
-    p += 3.0 * uu * t * p1;
-    p += 3.0 * u * tt * p2;
-    p += ttt * p3;
-
-    return p;
-    }
-
     void main() {
     vec4 texColor = texture2D(uTexture, vUv);
-    float progress = cubicBezier(
-        vUv.x, 
-        0.0,
-        uControlPoint1,
-        uControlPoint2,
-        1.0
-    );
-    float alpha = mix(uAlphaStart, uAlphaEnd, progress);
-    gl_FragColor = vec4(texColor.rgb, texColor.a * alpha);
+    // Linear gradient from left to right
+    float alpha = mix(uAlphaStart, uAlphaEnd, vUv.x);
+
+    // Check if color matches target (#fbba7a)
+    // Texture is SRGBColorSpace, so texColor.rgb is in linear space
+    // Convert target color from sRGB to linear for comparison
+    vec3 targetLinear = pow(uTargetColor, vec3(2.2));
+    float colorDist = distance(texColor.rgb, targetLinear);
+    float colorMatch = 1.0 - smoothstep(0.0, 0.15, colorDist);
+
+    // Glow effect: stronger for matching colors
+    float glowStrength = (1.0 - alpha) * uGlowIntensity;
+    glowStrength *= (1.0 + colorMatch * 1.0); // Extra glow for matching colors
+
+    vec3 glow = uGlowColor * glowStrength;
+    vec3 finalColor = texColor.rgb + glow;
+
+    gl_FragColor = vec4(finalColor, texColor.a * alpha);
     }
 `;
 const material = new THREE.ShaderMaterial({
@@ -54,10 +49,11 @@ const material = new THREE.ShaderMaterial({
     fragmentShader: fragmentShader,
     uniforms: {
         uAlphaStart: { value: 1 },
-        uAlphaEnd: { value: 0.4 },
-        uControlPoint1: { value: 0.2 },
-        uControlPoint2: { value: 0.6 },
+        uAlphaEnd: { value: 0.3 },
         uTexture: { value: texture },
+        uGlowIntensity: { value: 1 },
+        uGlowColor: { value: new THREE.Color(1.0, 0.85, 0.6) },
+        uTargetColor: { value: new THREE.Color(0.984, 0.729, 0.478) }, // #fbba7a
     },
     transparent: true,
     side: THREE.FrontSide,
