@@ -7,9 +7,8 @@ import {
     setPlayStatus,
     setProgressBar,
 } from "./elements";
+import { debug, wallpaper } from "../config";
 let WIDTH, HEIGHT;
-const wallpaper = true;
-const debug = false;
 var canvasEl = document.createElement("canvas");
 const leafer = new Leafer({
     view: canvasEl,
@@ -95,6 +94,9 @@ function mediaTimelineListener(event) {
 function mediaStatusListener(event) {
     if (!event.enabled) {
         setPlayStatus(true);
+        if (debug) {
+            console.log("disabled");
+        }
     }
 }
 if (wallpaper) {

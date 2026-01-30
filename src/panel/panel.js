@@ -65,7 +65,6 @@ const currentOffset = { x: 0, y: 0 };
 const baseX = -30;
 const baseY = 45;
 const sensitivity = 0.05;
-const slerpFactor = 2;
 function rotate() {
     targetOffset.x = mouse.x * sensitivity;
     targetOffset.y = -mouse.y * sensitivity;
@@ -83,10 +82,10 @@ function rotate() {
     );
     const targetQ = qWorldX.clone().premultiply(qWorldY);
 
-    mesh.quaternion.slerp(targetQ, slerpFactor);
+    mesh.quaternion.copy(targetQ);
 }
 export const mesh = new THREE.Mesh(geometry, material);
-mesh.position.set(-0.35, 0.05, 0);
+mesh.position.set(-0.3, 0.05, 0);
 export function update() {
     updateTexture();
     rotate();

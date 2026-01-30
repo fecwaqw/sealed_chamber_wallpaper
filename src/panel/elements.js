@@ -278,7 +278,7 @@ const control = new Group({
                 new Text({
                     x: 58.5,
                     y: 22.5,
-                    letterSpacing: -2,
+                    letterSpacing: -1,
                     fill: "#74a3a3",
                     fontSize: 26,
                     fontFamily: "TT Lakes Neue Trial Medium",
@@ -300,7 +300,7 @@ const control = new Group({
                 new Text({
                     x: 58.5,
                     y: 22.5,
-                    letterSpacing: -2,
+                    letterSpacing: -1,
                     fill: "#b20000",
                     fontSize: 26,
                     fontFamily: "TT Lakes Neue Trial Medium",

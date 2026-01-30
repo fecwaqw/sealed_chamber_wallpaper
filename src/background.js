@@ -4,53 +4,6 @@ const loader = new THREE.TextureLoader();
 export const texture = loader.load(background);
 texture.colorSpace = THREE.SRGBColorSpace;
 
-// Film grain + color grading shader for post-processing pass
-export const FilmShader = {
-    uniforms: {
-        tDiffuse: { value: null },
-        uTime: { value: 0 },
-    },
-    vertexShader: `
-        varying vec2 vUv;
-        void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `,
-    fragmentShader: `
-        uniform sampler2D tDiffuse;
-        uniform float uTime;
-        varying vec2 vUv;
-
-        // Simple noise function
-        float random(vec2 st) {
-            return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-        }
-
-        void main() {
-            vec4 color = texture2D(tDiffuse, vUv);
-
-            // Film grain effect
-            float noise = random(vUv + uTime) * 0.04;
-            color.rgb += noise - 0.01;
-
-            // Desaturation (fade to vintage look)
-            float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-            color.rgb = mix(color.rgb, vec3(gray), 0.2);
-
-            // Sepia tint
-            vec3 sepia = vec3(
-                dot(color.rgb, vec3(0.393, 0.769, 0.189)),
-                dot(color.rgb, vec3(0.349, 0.686, 0.168)),
-                dot(color.rgb, vec3(0.272, 0.534, 0.131))
-            );
-            color.rgb = mix(color.rgb, sepia, 0.1);
-
-            gl_FragColor = color;
-        }
-    `,
-};
-
 // Vignette shader for post-processing pass
 export const VignetteShader = {
     uniforms: {
@@ -78,7 +31,7 @@ export const VignetteShader = {
             // uVignetteRadius controls where black starts (0.0 = full screen, 1.0 = no effect)
             float alpha = smoothstep(uVignetteRadius, 1.0, vUv.x);
             // Base transparency at left edge (0.0 = fully black, 1.0 = fully transparent)
-            float baseAlpha = 0.02;
+            float baseAlpha = 0.1;
             color.rgb = mix(vec3(0.0), color.rgb, alpha * (1.0 - baseAlpha) + baseAlpha);
 
             gl_FragColor = color;
