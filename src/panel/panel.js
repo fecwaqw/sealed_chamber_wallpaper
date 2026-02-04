@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { texture, updateTexture, resizeCanvas } from "./panel-canvas";
-export { setFps } from "./panel-canvas";
+export { setFps, init, wallpaperEngine, clear } from "./panel-canvas";
 const geometry = new THREE.PlaneGeometry(1.3, 0.8);
 const material = new THREE.MeshBasicMaterial({
     map: texture,

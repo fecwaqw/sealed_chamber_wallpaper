@@ -1,4 +1,3 @@
-import "./style.css";
 import * as panel from "./panel/panel";
 import { camera } from "./camera";
 import * as background from "./background";
@@ -63,10 +62,21 @@ function resize(width, height) {
 }
 window.onload = () => {
     resize(window.innerWidth, window.innerHeight);
+    panel.init();
     panel.setFps(Fps);
     requestAnimationFrame(animate);
 };
 if (wallpaper) {
+    window.wallpaperRegisterAudioListener(panel.wallpaperEngine.audioListener);
+    window.wallpaperRegisterMediaPlaybackListener(
+        panel.wallpaperEngine.mediaPlaybackListener,
+    );
+    window.wallpaperRegisterMediaTimelineListener(
+        panel.wallpaperEngine.mediaTimelineListener,
+    );
+    window.wallpaperRegisterMediaStatusListener(
+        panel.wallpaperEngine.mediaStatusListener,
+    );
     window.wallpaperPropertyListener = {
         applyGeneralProperties: function (properties) {
             if (properties.fps) {

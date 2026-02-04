@@ -7,7 +7,7 @@ import {
     setPlayStatus,
     setProgressBar,
 } from "./elements";
-import { debug, wallpaper } from "../config";
+import { debug } from "../config";
 let WIDTH, HEIGHT;
 var canvasEl = document.createElement("canvas");
 const leafer = new Leafer({
@@ -18,7 +18,9 @@ const leafer = new Leafer({
     hitChildren: false,
     fill: "#FFF0",
 });
-leafer.add(elements);
+export function init() {
+    leafer.add(elements);
+}
 export function setFps(fps) {
     leafer.config.maxFPS = fps;
 }
@@ -38,66 +40,63 @@ export { texture };
 export function updateTexture() {
     texture.needsUpdate = true;
 }
-
-function audioListener(audioArray) {
-    var energys = Array.from({ length: 15 }, (_, k) => {
-        const leftEnergy = Math.min(
-            audioArray[Math.floor(((k + 1) / 15) * 64) - 1],
-            1,
-        );
-        const rightEnery = Math.min(
-            audioArray[Math.floor(((k + 1) / 15) * 64) - 1 + 64],
-            1,
-        );
-        const averageEnergy = (leftEnergy + rightEnery) / 2;
-        return Math.round(averageEnergy * 22);
-    });
-    var magnitudeLeft = Math.round(
-        (audioArray.slice(0, 64).reduce((sum, value) => {
-            return sum + value;
-        }, 0) /
-            64) *
-            116,
-    );
-    var magnitudeRight = Math.round(
-        (audioArray.slice(64, 128).reduce((sum, value) => {
-            return sum + value;
-        }, 0) /
-            64) *
-            116,
-    );
+export function clear() {
     for (var i = 0; i < 15; i++) {
-        setSpectrumLevelBars(i, energys[i]);
+        setSpectrumLevelBars(i, 0);
     }
-    setPeakprogramMeterLevelBar("L", magnitudeLeft);
-    setPeakprogramMeterLevelBar("R", magnitudeRight);
+    setPeakprogramMeterLevelBar("L", 0);
+    setPeakprogramMeterLevelBar("R", 0);
 }
-
-function mediaPlaybackListener(event) {
-    if (event.status == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
-        setPlayStatus(true);
-    } else if (
-        event.status == window.wallpaperMediaIntegration.PLAYBACK_PAUSED ||
-        event.status == window.wallpaperMediaIntegration.PLAYBACK_STOPPED
-    ) {
-        setPlayStatus(false);
-    }
-}
-
-function mediaTimelineListener(event) {
-    setProgressBar(Math.ceil((event.position / event.duration) * 3));
-}
-function mediaStatusListener(event) {
-    if (!event.enabled) {
-        setPlayStatus(true);
-        if (debug) {
-            console.log("disabled");
+export const wallpaperEngine = {
+    audioListener: (audioArray) => {
+        var energys = Array.from({ length: 15 }, (_, k) => {
+            const leftEnergy = Math.min(
+                audioArray[Math.floor(((k + 1) / 15) * 64) - 1],
+                1,
+            );
+            const rightEnery = Math.min(
+                audioArray[Math.floor(((k + 1) / 15) * 64) - 1 + 64],
+                1,
+            );
+            const averageEnergy = (leftEnergy + rightEnery) / 2;
+            return Math.round(averageEnergy * 22);
+        });
+        var magnitudeLeft = Math.round(
+            (audioArray.slice(0, 64).reduce((sum, value) => {
+                return sum + value;
+            }, 0) /
+                64) *
+                116,
+        );
+        var magnitudeRight = Math.round(
+            (audioArray.slice(64, 128).reduce((sum, value) => {
+                return sum + value;
+            }, 0) /
+                64) *
+                116,
+        );
+        for (var i = 0; i < 15; i++) {
+            setSpectrumLevelBars(i, energys[i]);
         }
-    }
-}
-if (wallpaper) {
-    window.wallpaperRegisterAudioListener(audioListener);
-    window.wallpaperRegisterMediaPlaybackListener(mediaPlaybackListener);
-    window.wallpaperRegisterMediaTimelineListener(mediaTimelineListener);
-    window.wallpaperRegisterMediaStatusListener(mediaStatusListener);
-}
+        setPeakprogramMeterLevelBar("L", magnitudeLeft);
+        setPeakprogramMeterLevelBar("R", magnitudeRight);
+    },
+    mediaPlaybackListener: (event) => {
+        if (event.status == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+            setPlayStatus(true);
+        } else if (
+            event.status == window.wallpaperMediaIntegration.PLAYBACK_PAUSED ||
+            event.status == window.wallpaperMediaIntegration.PLAYBACK_STOPPED
+        ) {
+            setPlayStatus(false);
+        }
+    },
+    mediaTimelineListener: (event) => {
+        setProgressBar(Math.ceil((event.position / event.duration) * 3));
+    },
+    mediaStatusListener: (event) => {
+        if (!event.enabled) {
+            setPlayStatus(true);
+        }
+    },
+};
