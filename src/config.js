@@ -1,2 +1,2 @@
 export const debug = false;
-export const wallpaper = true;
+export const wallpaper = false;

@@ -1,7 +1,23 @@
 import * as THREE from "three";
 import { background } from "./images";
-const loader = new THREE.TextureLoader();
-export const texture = loader.load(background);
+
+const backgroundAlpha = 0.5;
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d");
+const img = new Image();
+img.src = background;
+img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = backgroundAlpha;
+    ctx.drawImage(img, 0, 0);
+    ctx.globalAlpha = 1;
+    texture.needsUpdate = true;
+};
+
+export const texture = new THREE.CanvasTexture(canvas);
 texture.colorSpace = THREE.SRGBColorSpace;
 
 // Vignette shader for post-processing pass
@@ -60,8 +76,7 @@ export const GlowShader = {
         void main() {
             vec4 color = texture2D(tDiffuse, vUv);
 
-            // Semi-circular glow radiating from diamond center (right edge, upper 1/3)
-            vec2 glowCenter = vec2(1.0, 0.6);
+            vec2 glowCenter = vec2(1.0, 0.7);
             vec2 toPixel = vUv - glowCenter;
 
             // Correct for aspect ratio to keep circle shape
@@ -85,7 +100,7 @@ export const GlowShader = {
             float lineY = abs(vUv.y - glowCenter.y);
             // Linear fade instead of smoothstep
             float lineFade = clamp(1.0 - lineY / lineWidth, 0.0, 1.0);
-            lineFade *= max(0.0, 1.0 - distFromRight / 0.7);
+            lineFade *= max(0.0, 1.0 - distFromRight / 0.6);
 
             // Diamond glow stronger (boosted intensity)
             float circleMax = 0.01;
@@ -118,14 +133,20 @@ export const GlowShader = {
 
 export function resize(width, height) {
     const canvasAspect = width / height;
-    const imageAspect = texture.image
-        ? texture.image.width / texture.image.height
-        : 1;
-    const aspect = imageAspect / canvasAspect;
+    const imageAspect = img.width / img.height;
 
-    texture.offset.x = aspect > 1 ? (1 - 1 / aspect) / 2 : 0;
-    texture.repeat.x = aspect > 1 ? 1 / aspect : 1;
+    if (canvasAspect > imageAspect) {
+        canvas.width = height * imageAspect;
+        canvas.height = height;
+    } else {
+        canvas.width = width;
+        canvas.height = width / imageAspect;
+    }
 
-    texture.offset.y = aspect > 1 ? 0 : (1 - aspect) / 2;
-    texture.repeat.y = aspect > 1 ? 1 : aspect;
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = backgroundAlpha;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+    texture.needsUpdate = true;
 }

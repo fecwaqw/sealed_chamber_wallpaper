@@ -11,8 +11,9 @@ import {
     SMAAPass,
 } from "three/examples/jsm/Addons.js";
 import { wallpaper } from "./config";
+const Fps = 60;
 var clock = new THREE.Clock();
-var renderT = 1 / 60;
+var renderT = 1 / Fps;
 var timeS = 0;
 const canvas = document.querySelector("#main-canvas");
 const renderer = new THREE.WebGLRenderer({
@@ -45,7 +46,7 @@ composer.addPass(vignettePass);
 var glowPass = new ShaderPass(background.GlowShader);
 glowPass.uniforms["uAspect"].value = window.innerWidth / window.innerHeight;
 composer.addPass(glowPass);
-//composer.addPass(new SMAAPass());
+composer.addPass(new SMAAPass());
 composer.addPass(new OutputPass());
 
 document.addEventListener("mousemove", panel.onMouseMove);
@@ -62,6 +63,7 @@ function resize(width, height) {
 }
 window.onload = () => {
     resize(window.innerWidth, window.innerHeight);
+    panel.setFps(Fps);
     requestAnimationFrame(animate);
 };
 if (wallpaper) {
@@ -69,6 +71,7 @@ if (wallpaper) {
         applyGeneralProperties: function (properties) {
             if (properties.fps) {
                 renderT = 1 / properties.fps;
+                panel.setFps(properties.fps);
             }
         },
     };

@@ -1,0 +1,26 @@
+{
+	"contentrating" : "Everyone",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0 0"
+			}
+		}
+	},
+	"preview" : "preview.jpg",
+	"ratingsex" : "none",
+	"ratingviolence" : "none",
+	"tags" : [ "Anime" ],
+	"title" : "「明日方舟」尘封密室",
+	"type" : "web",
+	"version" : 1,
+	"workshopid" : "3655954497",
+	"workshopurl" : "steam://url/CommunityFilePage/3655954497"
+}

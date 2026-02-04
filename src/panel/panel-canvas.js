@@ -16,15 +16,12 @@ const leafer = new Leafer({
     height: 800,
     hittable: false,
     hitChildren: false,
-    fill: "#00000010",
+    fill: "#FFF0",
 });
-function drawUI() {
-    leafer.add(elements);
+leafer.add(elements);
+export function setFps(fps) {
+    leafer.config.maxFPS = fps;
 }
-if (debug) {
-    drawUI();
-}
-
 export function resizeCanvas(width, height) {
     WIDTH = width;
     HEIGHT = Math.floor((WIDTH * 8) / 13);
@@ -39,7 +36,6 @@ texture.colorSpace = THREE.SRGBColorSpace;
 export { texture };
 
 export function updateTexture() {
-    drawUI();
     texture.needsUpdate = true;
 }
 
@@ -104,7 +100,4 @@ if (wallpaper) {
     window.wallpaperRegisterMediaPlaybackListener(mediaPlaybackListener);
     window.wallpaperRegisterMediaTimelineListener(mediaTimelineListener);
     window.wallpaperRegisterMediaStatusListener(mediaStatusListener);
-}
-if (debug) {
-    setSpectrumLevelBars(2, 10);
 }
